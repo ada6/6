@@ -1,0 +1,569 @@
+#include<string>
+#include<iostream>
+#include<fstream>
+using namespace std;
+
+class Person
+{
+public:
+	int hp;
+	string name;
+	int lifes;
+	int strength;
+	int kills;
+	virtual void attack() = 0;
+	virtual void heal() = 0;
+	virtual void seeStatistics() = 0;
+	virtual void getHit() = 0;
+	virtual void looseLife() = 0;
+};
+class Hero :public Person
+{
+public:
+	friend class Food;
+	int hp;
+	string name;
+	int lifes;
+	int strength;
+	int money;
+	Hero();
+	Hero(string heroName, int heroHp, int heroLifes, int heroStrength, int heroMoney)
+	{
+		name=heroName;
+		if (heroHp <= 100)
+			hp = heroHp;
+		if (heroLifes <= 5)
+			lifes = heroLifes;
+		if (heroStrength <= 100)
+			strength = heroStrength;
+		if (heroMoney <= 1000)
+			money = heroMoney;
+	}
+	void Eat(int eatHp, int eatStrength)
+	{
+		hp = hp + eatHp;
+		strength = strength + eatStrength;
+	}
+	void attack()
+	{
+		strength--;
+	}
+	void heal()
+	{
+		hp++;
+	}
+	void seeStatistics()
+	{
+		cout << "character statistics: " << endl << "Name: " << name << endl << "HP: " << hp << endl << "Lifes: " << lifes << endl << "Strength: " << strength << endl << "Money: " << money << " $" << endl;
+	}
+	void getHit()
+	{
+		hp--;
+	}
+	void looseLife()
+	{
+		if (hp = 0)
+			lifes--;
+		hp = 100;
+	}
+	void die()
+	{
+		if ((lifes = 0)&&(hp = 0))
+			{
+				cout << "you died";
+				exit(0);
+			}
+	}
+};
+class Monster : public Person
+{
+public:
+	int hp;
+	string name;
+	int lifes;
+	int strength;
+	Monster();
+	Monster(string monsterName, int monsterHp, int monsterLifes, int monsterStrength)
+	{
+		name = monsterName;
+		if (monsterHp <= 100)
+			hp = monsterHp;
+		if (monsterLifes <= 5)
+			lifes = monsterLifes;
+		if (monsterStrength <= 100)
+			strength = monsterStrength;
+	}
+	void attack()
+	{
+		strength--;
+	}
+	void heal()
+	{
+		hp++;
+	}
+	void seeStatistics()
+	{
+		cout << "character statistics: " << endl << "Name: " << name << endl << "HP: " << hp << endl << "Lifes: " << lifes << endl << "Strength: " << strength << endl;
+	}
+	void getHit()
+	{
+		hp--;
+	}
+	void looseLife()
+	{
+		if (hp = 0)
+			lifes--;
+		hp = 100;
+	}
+};
+class Item
+{
+public:
+	int space;
+	string name;
+	int price;
+	Item();
+};
+class Medicine : public Item
+{
+public:
+	int space;
+	string name;
+	int price;
+	int addHp;
+	Medicine();
+	virtual void Cure() = 0;
+};
+class Pill : public Medicine
+{
+public:
+	int space;
+	string name;
+	int price;
+	Pill();
+	Pill(int pillHp, int pillSpace, int pillPrice, string pillName)
+	{
+		if (pillHp <= 50)
+			addHp = pillHp;
+		name = pillName;
+		price = pillPrice;
+		if (pillSpace <= 2)
+			space = pillSpace;
+	}
+	void Cure()
+	{
+		cout << addHp;
+	}
+};
+class Potion : public Medicine
+{
+public:
+	int space;
+	string name;
+	int price;
+	Potion();
+	Potion(int potionHp, int potionSpace, int potionPrice, string potionName)
+	{
+		if (potionHp <= 100)
+			addHp = potionHp;
+		name = potionName;
+		price = potionPrice;
+		if (potionSpace <= 4)
+			space = potionSpace;
+	}
+	void Cure()
+	{
+		cout << addHp;
+	}
+};
+class Food : public Item
+{
+public:
+	friend class Hero;
+	int space;
+	string name;
+	int price;
+	int addHp;
+	int addStrength;
+	Food();
+	Food(string foodName, int foodSpace, int foodPrice, int AddHp, int AddStrength)
+	{
+		name = foodName;
+		price = foodPrice;
+		if (AddHp <= 20)
+			addHp = AddHp;
+		if (AddStrength <= 5)
+			addStrength = AddStrength;
+		if (foodSpace <= 3)
+			space = foodSpace;
+	}
+};
+class Weapon : public Item
+{
+public:
+	int space;
+	string name;
+	int price;
+	int power;
+	Weapon();
+	
+};
+class Bow
+{
+public:
+	int space;
+	string name;
+	int price;
+	int power;
+	int arrows;
+	Bow();
+	Bow(string bowName, int bowSpace, int bowPrice, int bowPower, int bowArrows)
+	{
+		name = bowName;
+		bowPrice = price;
+		if (bowSpace <= 6)
+			space = bowSpace;
+		if (bowPower <= 60)
+			power = bowPower;
+		if (bowArrows <= 10)
+			arrows = bowArrows;
+	}
+	void Shot()
+	{
+		if (arrows <= 0)
+		{
+			throw 1;
+		}
+		arrows--;
+	}
+};
+class Sword : public Weapon
+{
+public:
+	int space;
+	string name;
+	int price;
+	int power;
+	Sword();
+	Sword(string swordName, int swordPower, int swordSpace, int swordPrice)
+	{
+		name = swordName;
+		if (swordPower <= 100)
+			power = swordPower;
+		swordPrice = price;
+		if (swordSpace <= 7)
+			space = swordSpace;
+	}
+};
+class Storage
+{
+public:
+	virtual void deleteItems() = 0;
+	Storage();
+};
+class Backpack : public Storage
+{
+public:
+	int fullSpace = 100;
+	int takenSpace;
+	Backpack();
+	Backpack(int backpackTakenSpace)
+	{
+		if (backpackTakenSpace <= 100)
+			takenSpace = backpackTakenSpace;
+	}
+	void deleteItems()
+	{
+		takenSpace = 0;
+	}
+};
+class Shop : public Storage
+{
+public:
+	Shop();
+	friend class Food;
+	friend class Potion;
+	friend class Pill;
+	friend int main();
+	Food *fruit = new Food("apple", 1, 2, 1, 1);
+	Food *meat = new Food("steak", 2, 10, 15, 5);
+	Pill *white = new Pill(50, 2, 10, "White Pill");
+	Potion *blue = new Potion(60, 3, 12, "Blue Potion");
+	Potion *gold = new Potion(100, 3, 40, "Golden Piotion");
+	void deleteItems()
+	{
+		delete fruit;
+		delete meat;
+		delete white;
+		delete blue;
+		delete gold;
+	}
+};
+int main()
+{
+	
+	Shop Inn();
+	Bow myBow("My Bow",4,50,5,2);
+	Hero myHero("Chris", 100, 5, 100, 1000);
+	Monster werewolf("Werewolf", 75, 5, 75);
+	Monster cyclops("Cyclops", 80, 2, 90);
+	Monster giant("Giant", 100, 3, 100);
+	Monster gnome("Gnome", 20, 1, 5);
+	Hero *hero = &myHero;
+	Bow *bow = &myBow;
+	Monster *monster1 = &werewolf;
+	Monster *monster2 = &cyclops;
+	Monster *monster3 = &giant;
+	Monster *monster4 = &gnome;
+
+	if ((monster1->hp = 0) && (monster1->lifes = 0))
+		delete monster1;
+	if ((monster2->hp = 0) && (monster2->lifes = 0))
+		delete monster2;
+	if ((monster3->hp = 0) && (monster3->lifes = 0))
+		delete monster3;
+	if ((monster4->hp = 0) && (monster4->lifes = 0))
+		delete monster4;
+	
+	
+
+	string file_name;
+	file_name = "talk.txt";
+	fstream myfile;
+	myfile.open(file_name.c_str());
+	string data;
+	string a, b, c, d;
+
+
+	cout << "MENU:" << endl;
+	cout << "1.character statistics" << endl;
+	cout << "2.go straight" << endl;
+	cout << "3.end game" << endl;
+	int choice;
+	while (true)
+	{
+	x:
+		cout << "your choice: ";
+		cin >> choice;
+
+		switch (choice)
+		{
+		case 1:
+			hero->seeStatistics();
+			break;
+
+		case 2:
+			cout << "choose numbers 1-4" << endl;
+			int random;
+			cin >> random;
+			cout << endl;
+
+			switch (random)
+			{
+			case 1:
+				cout << "you've met a monster!" << endl << endl;
+				cout << "choose letters a-d" << endl;
+				char monster;
+				cin >> monster;
+				cout << endl;
+
+				if (monster == 'a')
+				{
+					monster1->seeStatistics();
+					cout << endl << "wanna fight or run away? y/n" << endl;
+					char fight;
+					cin >> fight;
+					if (fight == 'n')
+						goto x;
+					else if (fight == 'y')
+					{
+						hero->attack();
+						monster1->getHit();
+						if (monster1->strength >= hero->strength)
+						{
+							monster1->attack();
+							hero->getHit();
+							cout << "monster is very strong, you'd better run away!!!" << endl;
+						}
+						else
+							cout << "monster run away, you're save";
+						cout << endl;
+					}
+				}
+				else if (monster == 'b')
+				{
+					monster2->seeStatistics();
+					cout << endl << "wanna fight or run away? y/n" << endl;
+					char fight;
+					cin >> fight;
+					if (fight == 'n')
+						goto x;
+					else if (fight == 'y')
+					{
+						hero->attack();
+						monster2->getHit();
+						if (monster2->strength >= hero->strength)
+						{
+							monster2->attack();
+							hero->getHit();
+							cout << "monster is very strong, you'd better run away!!!" << endl;
+						}
+						else
+							cout << "monster run away, you're save";
+						cout << endl;
+					}
+				}
+				else if (monster == 'c')
+				{
+					monster3->seeStatistics();
+					cout << endl << "wanna fight or run away? y/n" << endl;
+					char fight;
+					cin >> fight;
+					if (fight == 'n')
+						goto x;
+					else if (fight == 'y')
+					{
+						hero->attack();
+						monster3->getHit();
+						if (monster3->strength >= hero->strength)
+						{
+							monster3->attack();
+							hero->getHit();
+							cout << "monster is very strong, you'd better run away!!!" << endl;
+						}
+						else
+							cout << "monster run away, you're save";
+						cout << endl;
+					}
+				}
+				else if (monster == 'd')
+				{
+					monster4->seeStatistics();
+					cout << endl << "wanna fight or run away? y/n" << endl;
+					char fight;
+					cin >> fight;
+					if (fight == 'n')
+						goto x;
+					else if (fight == 'y')
+					{
+						hero->attack();
+						monster4->getHit();
+						if (monster4->strength >= hero->strength)
+						{
+							monster4->attack();
+							hero->getHit();
+							cout << "monster is very strong, you'd better run away!!!" << endl;
+						}
+						else
+							cout << "monster run away, you're save";
+						cout << endl;
+					}
+				}
+				break;
+			case 2:
+				cout << "you found an Inn, wanna see what's inside? y/n" << endl;
+				char shopping;
+				cin >> shopping;
+				if (shopping == 'n')
+					goto x;
+				else if (shopping == 'y')
+				{
+					if (myfile.is_open())
+					{
+
+						getline(myfile, data);
+						a = data;
+						getline(myfile, data);
+						b = data;
+						getline(myfile, data);
+						c = data;
+						getline(myfile, data);
+						d = data;
+						cout << a << endl << b << endl << c << endl << d << endl;
+					}
+					myfile.close();
+					cout << "what do u choose?" << endl;
+					string buy;
+					cin >> buy;
+					if (buy == "apple")
+					{
+						hero->money = hero->money - 2;
+						hero->Eat(1, 1);
+					}
+					else if (buy == "steak")
+					{
+						hero->money = hero->money - 10;
+						hero->Eat(15, 5);
+					}
+					else if (buy == "whitepill")
+					{
+						hero->money = hero->money - 10;
+						hero->Eat(50, 0);
+					}
+					else if (buy == "bluepotion")
+					{
+						hero->money = hero->money - 12;
+						hero->Eat(60, 0);
+					}
+					else if (buy == "goldenpotion")
+					{
+						hero->money = hero->money - 40;
+						hero->Eat(100, 0);
+					}
+					else if (buy == "nothing")
+						cout << "OK, maybe later, buy bro" << endl;
+					
+				}
+			break;
+			case 3:
+			{cout << "Can u see? There's a goblin in the bushes! Wanna hit him with you arrow? y/n" << endl;
+			char shot;
+			cin >> shot;
+			if (shot == 'y')
+			{
+				try
+				{
+					bow->Shot();
+				}
+				catch (int w)
+				{
+					cout <<"no arrows left" << endl;
+				}
+				cout << "He run away!" << endl;
+			}
+			else if (shot == 'n')
+				goto x;
+			}
+			break;
+
+			default:
+				cout << "error";
+				break;
+
+
+
+
+
+			}
+			break;
+
+		case 3:
+
+			exit(0);
+			break;
+
+		default:
+			cout << "error";
+			break;
+		}
+	}
+
+
+	
+
+	
+
+
+	system("PAUSE");
+	return 0;
+}
